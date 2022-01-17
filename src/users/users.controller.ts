@@ -14,6 +14,9 @@ import {
   Body,
   Put,
   Delete,
+  HttpException,
+  HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,18 +26,26 @@ import { User } from './interfaces/user.interface';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    this.usersService.create(createUserDto);
-  }
-  @Get()
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll();
-  }
-  //   @Get()
-  //   getInfo(@HostParam('account') account: string) {
-  //     return account;
-  //   }
+  // @Post()
+  // async create(@Body() createUserDto: CreateUserDto) {
+  //   this.usersService.create(createUserDto);
+  //   throw new HttpException(
+  //     {
+  //       status: HttpStatus.FORBIDDEN,
+  //       error: 'This is a custom message',
+  //     },
+  //     HttpStatus.FORBIDDEN,
+  //   );
+  // }
+  // @Get(':id')
+  // async findOne(@Param(ParseIntPipe) params): Promise<User> {
+  //   return this.usersService.findOne(params.id);
+  // }
+
+  // @Get()
+  // getInfo(@HostParam('account') account: string) {
+  //   return account;
+  // }
 
   // @Post()
   // @Header('Cache-Control', 'none')
