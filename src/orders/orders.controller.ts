@@ -8,10 +8,12 @@ import {
   Post,
   Put,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Order } from 'src/database/entity/order.entity';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateOrderDto } from 'src/dto/create-order.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -31,14 +33,14 @@ export class OrdersController {
   // create a order
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() order: Order) {
+  create(@Body(new ValidationPipe()) order: CreateOrderDto) {
     return this.ordersService.create(order);
   }
 
   // update a order
   @UseGuards(JwtAuthGuard)
   @Put()
-  update(@Body() order: Order) {
+  update(@Body(new ValidationPipe()) order: CreateOrderDto) {
     return this.ordersService.update(order);
   }
 
