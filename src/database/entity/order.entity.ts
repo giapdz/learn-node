@@ -6,10 +6,10 @@ export class Order {
   id: number;
 
   @Column()
-  user_id: number;
+  userId: number;
 
   @Column()
-  product_id: number;
+  productId: number;
 
   @Column()
   quantity: number;
