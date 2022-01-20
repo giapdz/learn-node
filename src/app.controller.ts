@@ -1,21 +1,8 @@
 import { AppService } from './app.service';
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Request,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 
-import { LocalAuthGuard } from './auth/local-auth.guard';
-import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { LocalAuthGuard } from './modules/auth/local-auth.guard';
+import { AuthService } from './modules/auth/auth.service';
 
 @Controller()
 export class AppController {
@@ -33,17 +20,6 @@ export class AppController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('/payment/:id')
-  getById(@Param('id', ParseIntPipe) id: number) {
-    return this.appService.getPaymentById(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/payment/create')
-  create(@Body(new ValidationPipe()) createItemDto: CreatePaymentDto) {
-    return this.appService.createPayment(createItemDto);
-  }
   // @Get('orders')
   // getProfile(@Request() req) {
   //   return req.user;

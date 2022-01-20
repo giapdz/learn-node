@@ -19,7 +19,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './interfaces/user.interface';
 
 @Controller('users')

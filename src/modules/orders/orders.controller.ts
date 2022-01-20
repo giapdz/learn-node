@@ -10,10 +10,11 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { Order } from 'src/database/entity/order.entity';
+import { Order } from './entities/order.entity';
 import { OrdersService } from './orders.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateOrderDto } from 'src/dto/create-order.dto';
+import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
+import { CreateOrderDto } from 'src/modules/orders/dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -39,8 +40,8 @@ export class OrdersController {
 
   // update a order
   @UseGuards(JwtAuthGuard)
-  @Put()
-  update(@Body(new ValidationPipe()) order: CreateOrderDto) {
+  @Put(':id')
+  update(@Body(new ValidationPipe()) order: UpdateOrderDto) {
     return this.ordersService.update(order);
   }
 

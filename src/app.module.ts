@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-
-import { DatabaseModule } from './database/database.module';
-import { OrdersModule } from './orders/orders.module';
-import { AuthService } from './auth/auth.service';
-import { AuthModule } from './auth/auth.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { UsersModule } from './modules/users/users.module';
+import { DatabaseModule } from './config/database/database.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -15,16 +13,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     UsersModule,
     OrdersModule,
     AuthModule,
-    ClientsModule.register([
-      {
-        name: 'ITEM_MICROSERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
-      },
-    ]),
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
