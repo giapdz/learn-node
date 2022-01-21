@@ -3,10 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
   Put,
+  Query,
+  Res,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -15,40 +19,69 @@ import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { CreateOrderDto } from 'src/modules/orders/dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Response } from 'express';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
   // get all order
   @Get()
-  findAll(): Promise<Order[]> {
-    return this.ordersService.findAll();
+  async findAll(@Res() res: Response) {
+    const orders = await this.ordersService.findAll();
+    return res.status(HttpStatus.OK).json({
+      message: 'Success',
+      orders,
+    });
   }
 
   // get order by id
   @Get(':id')
-  get(@Param(ParseIntPipe) params) {
-    return this.ordersService.findOne(params.id);
+  async get(@Res() res: Response, @Param('id', ParseIntPipe) id) {
+    const order = await this.ordersService.findOne(id);
+    if (!order) throw new NotFoundException('Order does not exist!');
+    res.status(HttpStatus.OK).json({
+      message: 'Success',
+      order,
+    });
   }
 
   // create a order
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body(new ValidationPipe()) order: CreateOrderDto) {
-    return this.ordersService.create(order);
+  async create(
+    @Res() res: Response,
+    @Body(new ValidationPipe()) createOrder: CreateOrderDto,
+  ) {
+    const order = await this.ordersService.create(createOrder);
+    if (!order) throw new NotFoundException('Order does not exist!');
+    res.status(HttpStatus.OK).json({
+      message: 'Order has been created successfully',
+      order,
+    });
   }
 
   // update a order
   @UseGuards(JwtAuthGuard)
-  @Put(':id')
-  update(@Body(new ValidationPipe()) order: UpdateOrderDto) {
-    return this.ordersService.update(order);
+  @Put()
+  async update(
+    @Res() res: Response,
+    @Body(new ValidationPipe()) updateOrder: UpdateOrderDto,
+  ) {
+    const order = await this.ordersService.update(updateOrder);
+    if (!order) throw new NotFoundException('Order does not exist!');
+    res.status(HttpStatus.OK).json({
+      message: 'Order has been updated successfully',
+    });
   }
 
   // delete a order
   @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  delete(@Param(ParseIntPipe) params) {
-    return this.ordersService.delete(params.id);
+  @Delete()
+  async delete(@Res() res: Response, @Query('id', ParseIntPipe) id) {
+    const order = await this.ordersService.delete(id);
+    if (!order) throw new NotFoundException('Order does not exist!');
+    res.status(HttpStatus.OK).json({
+      message: 'Order has been deleted successfully',
+    });
   }
 }

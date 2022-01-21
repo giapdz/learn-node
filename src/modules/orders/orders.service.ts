@@ -21,10 +21,12 @@ export class OrdersService {
   async create(order: CreateOrderDto): Promise<Order> {
     return await this.ordersRepo.save(order);
   }
-  async update(order: UpdateOrderDto): Promise<UpdateResult> {
-    return await this.ordersRepo.update(order.id, order);
+  async update(order: UpdateOrderDto): Promise<number> {
+    const orderUpdate = await this.ordersRepo.update(order.id, order);
+    return orderUpdate.affected;
   }
-  async delete(id: number): Promise<DeleteResult> {
-    return await this.ordersRepo.delete(id);
+  async delete(id: number): Promise<number> {
+    const order = await this.ordersRepo.delete(id);
+    return order.affected;
   }
 }
