@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinTable,
+} from 'typeorm';
+import { Product } from './product.entity';
 
 @Entity()
 export class Order {
@@ -9,11 +16,11 @@ export class Order {
   userId: number;
 
   @Column()
-  productId: number;
-
-  @Column()
   quantity: number;
 
   @Column({ default: true })
   isBought: boolean;
+
+  @ManyToOne((type) => Product, (product) => product.orders)
+  product: Product;
 }

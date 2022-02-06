@@ -16,8 +16,8 @@ import {
 } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { OrdersService } from './orders.service';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { CreateOrderDto } from 'src/modules/orders/dto/create-order.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Response } from 'express';
 
@@ -37,8 +37,7 @@ export class OrdersController {
   // get order by id
   @Get(':id')
   async get(@Res() res: Response, @Param('id', ParseIntPipe) id) {
-    const order = await this.ordersService.findOne(id);
-    if (!order) throw new NotFoundException('Order does not exist!');
+    const order = await this.ordersService.findOneByIdOrThrow(id);
     res.status(HttpStatus.OK).json({
       message: 'Success',
       order,
@@ -53,7 +52,6 @@ export class OrdersController {
     @Body(new ValidationPipe()) createOrder: CreateOrderDto,
   ) {
     const order = await this.ordersService.create(createOrder);
-    if (!order) throw new NotFoundException('Order does not exist!');
     res.status(HttpStatus.OK).json({
       message: 'Order has been created successfully',
       order,
@@ -68,9 +66,9 @@ export class OrdersController {
     @Body(new ValidationPipe()) updateOrder: UpdateOrderDto,
   ) {
     const order = await this.ordersService.update(updateOrder);
-    if (!order) throw new NotFoundException('Order does not exist!');
     res.status(HttpStatus.OK).json({
       message: 'Order has been updated successfully',
+      order,
     });
   }
 
@@ -78,8 +76,6 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async delete(@Res() res: Response, @Query('id', ParseIntPipe) id) {
-    const order = await this.ordersService.delete(id);
-    if (!order) throw new NotFoundException('Order does not exist!');
     res.status(HttpStatus.OK).json({
       message: 'Order has been deleted successfully',
     });
